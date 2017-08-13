@@ -1,0 +1,59 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "http://files.minecraftforge.net/maven" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+
+version = mc_version + "-" + mod_version
+
+sourceCompatibility = targetCompatibility = "1.6" // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = "1.6"
+}
+
+minecraft {
+    version = mc_version + "-" + forge_version
+    runDir = "run"
+
+    mappings = mcp_mappings
+    replaceIn "Info.java"
+    replace "@VERSION@", mod_version
+}
+
+processResources
+{
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+                
+        expand "version": project.version, "mcversion": mc_version
+    }
+        
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+repositories {
+    maven {
+        name "progwml6"
+        url "http://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        url "http://maven.epoxide.xyz"
+    }
+    mavenCentral()
+}
+
+dependencies {
+    deobfCompile group: "mezz.jei", name: "jei_" + mc_version, version: jei_version
+    deobfCompile group: "net.darkhax.tesla", name: "Tesla", version: tesla_version
+}

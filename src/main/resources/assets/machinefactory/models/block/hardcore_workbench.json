@@ -1,0 +1,11 @@
+{
+  "parent": "machinefactory:block/hardcore_workbench_table",
+  "textures": {
+    "particle": "machinefactory:blocks/hardcore_workbench/top",
+    "top": "machinefactory:blocks/hardcore_workbench/top",
+    "side": "machinefactory:blocks/hardcore_workbench/side",
+    "bottom": "machinefactory:blocks/hardcore_workbench/side",
+    "leg": "machinefactory:blocks/hardcore_workbench/side",
+    "legBottom": "machinefactory:blocks/hardcore_workbench/side"
+  }
+}

@@ -1,0 +1,6 @@
+{
+	"parent": "item/handheld",
+	"textures": {
+		"layer0": "machinefactory:items/tools/obsidian_hoe"
+	}
+}

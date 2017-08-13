@@ -1,0 +1,29 @@
+# Creative Tab
+itemGroup.machinefactory=Machine Factory
+
+# Armors
+item.obsidian_helmet.name=Obsidian Helmet
+item.obsidian_chestplate.name=Obsidian Chestplate
+item.obsidian_leggings.name=Obsidian Leggings
+item.obsidian_boots.name=Obsidian Boots
+
+# Tools
+
+# Ore
+tile.ore_platine.name=Platine Ore
+
+# Metal block
+tile.block_platine.name=Block of Platine
+tile.block_nether_star.name=Nether Star Block
+
+# Ingot
+item.ingot_platine.name=Platine ingot
+
+# Machines
+tile.hardcore_workbench_table.name=Hardcore WorkBench
+tile.machine_frame.name=Machine Frame
+tile.solar_generator.name=Solar Generator [WIP]
+tile.crusher.name=Crusher [WIP]
+tile.smelter.name=Smelter [WIP]
+tile.energy_storage.name=Energy Storage [WIP]
+tile.basic_energy_conduit.name=Basic Energy Conduit [WIP]

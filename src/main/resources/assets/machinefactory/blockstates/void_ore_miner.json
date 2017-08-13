@@ -1,0 +1,34 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"model": "cube",
+		"textures": {
+			"up": "machinefactory:blocks/void_ore_miner/top",
+			"down": "machinefactory:blocks/void_ore_miner/bottom",
+			"north": "machinefactory:blocks/void_ore_miner/front",
+			"south": "machinefactory:blocks/void_ore_miner/back",
+			"west": "machinefactory:blocks/void_ore_miner/right",
+			"east": "machinefactory:blocks/void_ore_miner/left",
+			"particle": "machinefactory:blocks/void_ore_miner/front"
+		}
+	},
+	"variants": {
+		"inventory": {
+			"model": "cube"
+		},
+		"facing": {
+			"north": {
+
+			},
+			"south": {
+				"y": 180
+			},
+			"west": {
+				"y": 270
+			},
+			"east": {
+				"y": 90
+			}
+		}
+	}
+}

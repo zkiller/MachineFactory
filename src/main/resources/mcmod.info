@@ -1,0 +1,16 @@
+[
+{
+  "modid": "machinefactory",
+  "name": "Machine Factory",
+  "description": "Another mod that add some machine",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://www.worldofazos.com",
+  "updateUrl": "",
+  "authorList": ["zkiller20"],
+  "credits": "The World of Azos guys, for making this mod",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

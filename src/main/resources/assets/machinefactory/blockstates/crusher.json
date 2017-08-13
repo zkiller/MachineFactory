@@ -1,0 +1,46 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"model": "cube",
+		"textures": {
+			"up": "machinefactory:blocks/crusher/top",
+			"down": "machinefactory:blocks/crusher/bottom",
+			"north": "machinefactory:blocks/crusher/front",
+			"south": "machinefactory:blocks/crusher/back",
+			"west": "machinefactory:blocks/crusher/right",
+			"east": "machinefactory:blocks/crusher/left",
+			"particle": "machinefactory:blocks/crusher/front"
+		}
+	},
+	"variants": {
+		"inventory": {
+			"model": "cube"
+		},
+		"facing": {
+			"north": {
+
+			},
+			"south": {
+				"y": 180
+			},
+			"west": {
+				"y": 270
+			},
+			"east": {
+				"y": 90
+			}
+		}
+	},
+	"active": {
+     "true": {
+        "textures": {
+          "front": "machinefactory:blocks/crusher/front_on"
+        }
+      },
+      "false": {
+        "textures": {
+          "front": "machinefactory:blocks/crusher/front_on"
+        }
+      }
+    }
+}

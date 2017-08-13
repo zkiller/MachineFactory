@@ -1,0 +1,34 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"model": "cube",
+		"textures": {
+			"up": "machinefactory:blocks/smelter/top",
+			"down": "machinefactory:blocks/smelter/bottom",
+			"north": "machinefactory:blocks/smelter/front",
+			"south": "machinefactory:blocks/smelter/back",
+			"west": "machinefactory:blocks/smelter/right",
+			"east": "machinefactory:blocks/smelter/left",
+			"particle": "machinefactory:blocks/smelter/front"
+		}
+	},
+	"variants": {
+		"inventory": {
+			"model": "cube"
+		},
+		"facing": {
+			"north": {
+
+			},
+			"south": {
+				"y": 180
+			},
+			"west": {
+				"y": 270
+			},
+			"east": {
+				"y": 90
+			}
+		}
+	}
+}
