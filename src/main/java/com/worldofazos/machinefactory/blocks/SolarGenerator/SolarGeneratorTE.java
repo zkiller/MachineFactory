@@ -3,38 +3,25 @@ package com.worldofazos.machinefactory.blocks.SolarGenerator;
 import com.worldofazos.machinefactory.config.ModConfig;
 import com.worldofazos.machinefactory.network.MessageTEUpdate;
 import com.worldofazos.machinefactory.network.PacketHandler;
-import com.worldofazos.machinefactory.utils.energy.CustomEnergyStorage;
-import com.worldofazos.machinefactory.utils.energy.TeslaAdapter;
+import com.worldofazos.machinefactory.tileentity.TileEntityMachineBase;
 import net.darkhax.tesla.capability.TeslaCapabilities;
-import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
-public class SolarGeneratorTE extends TileEntity implements ITickable {
-
-    private CustomEnergyStorage storage = new CustomEnergyStorage(ModConfig.SolarCapacityRF, 0, 1000);
-    private TeslaAdapter tesla = new TeslaAdapter(this.storage);
+public class SolarGeneratorTE extends TileEntityMachineBase implements ITickable {
 
     private int OUTPUT = ModConfig.SolarOutputRF;
     private int currentGen;
 
-    public int getEnergyStored(){
-        return this.storage.getEnergyStored();
-    }
-
-    public int getMaxEnergyStored(){
-        return this.storage.getMaxEnergyStored();
+    public SolarGeneratorTE(){
+        super(ModConfig.SolarCapacityRF, 0, 1000);
     }
 
     public int getCurrentGen(){
@@ -55,57 +42,53 @@ public class SolarGeneratorTE extends TileEntity implements ITickable {
         if(!this.getWorld().isRemote) {
             PacketHandler.network.sendToAll(new MessageTEUpdate(this));
 
-            // Generation de l'oxygen
             if (this.canGenerateEnergy()) {
 
-                if (isDesert()) {
+                if (this.isDesert()) {
                     this.currentGen = Math.round(ModConfig.SolarGenRF + 80);
                 }else {
                     this.currentGen = ModConfig.SolarGenRF;
                 }
 
-                this.storage.receiveEnergyInternal(this.getCurrentGen(), false);
+                this.getStorage().receiveEnergyInternal(this.getCurrentGen(), false);
 
             }else{
                 this.currentGen = 0;
             }
         }
 
+        //this.transmitPower(this.pos.down(), EnumFacing.UP);
+        this.transmitPower(this.pos.up(), EnumFacing.DOWN);
+        this.transmitPower(this.pos.north(), EnumFacing.SOUTH);
+        this.transmitPower(this.pos.south(), EnumFacing.NORTH);
+        this.transmitPower(this.pos.east(), EnumFacing.EAST);
+        this.transmitPower(this.pos.west(), EnumFacing.WEST);
+        this.markDirty();
+    }
+
+    private void transmitPower(BlockPos pos, EnumFacing facing) {
+        TileEntity te = this.worldObj.getTileEntity(pos);
+        int rfToGive = this.OUTPUT <= this.getEnergyStored() ? this.OUTPUT : this.getEnergyStored();
         int energyStored = this.getEnergyStored();
 
-        for (EnumFacing facing : EnumFacing.values()) {
+        if(energyStored > 0) {
+            if (te != null) {
 
-            // Ont output l'énergy
-            if(facing != EnumFacing.UP){
-
-                BlockPos pos = getPos().offset(facing);
-                TileEntity te = this.getWorld().getTileEntity(pos);
-
-                int rfToGive = this.OUTPUT <= this.getEnergyStored() ? this.OUTPUT : this.getEnergyStored();
-
-                // is Forge Energy
-                if(te != null && te.hasCapability(CapabilityEnergy.ENERGY, null)){
-                    int received = te.getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(rfToGive, false);
-                    energyStored -= this.storage.extractEnergy(received, false);
-
-                // is Tesla Energy
-                }else if(te != null && te.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, null)){
-                    long received = te.getCapability(TeslaCapabilities.CAPABILITY_CONSUMER,null).givePower(rfToGive, false);
-                    energyStored -= this.tesla.takePower(received, false);
-                }
-
-                if (energyStored <= 0) {
-                    break;
+                if (te.hasCapability(CapabilityEnergy.ENERGY, facing)) {
+                    int received = te.getCapability(CapabilityEnergy.ENERGY, facing).receiveEnergy(rfToGive, false);
+                    this.getStorage().extractEnergy(received, false);
+                } else if (te.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, facing)) {
+                    long received = te.getCapability(TeslaCapabilities.CAPABILITY_CONSUMER, facing).givePower(rfToGive, false);
+                    this.getTesla().takePower(received, false);
                 }
             }
-
         }
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
-        this.storage.writeToNBT(tag);
+        this.getStorage().writeToNBT(tag);
         tag.setInteger("currentGen", this.getCurrentGen());
         return tag;
     }
@@ -114,47 +97,8 @@ public class SolarGeneratorTE extends TileEntity implements ITickable {
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
-        this.storage.readFromNBT(tag);
+        this.getStorage().readFromNBT(tag);
         this.currentGen = tag.getInteger("currentGen");
-    }
-
-    @Nullable
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-
-        NBTTagCompound data = new NBTTagCompound();
-        writeToNBT(data);
-        return new SPacketUpdateTileEntity(this.pos, 1, data);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onDataPacket(NetworkManager networkManager, SPacketUpdateTileEntity s35PacketUpdateTileEntity) {
-        readFromNBT(s35PacketUpdateTileEntity.getNbtCompound());
-        this.getWorld().markBlockRangeForRenderUpdate(this.pos, this.pos);
-        markForUpdate();
-    }
-
-
-    public void markForUpdate() {
-        if (this.getWorld() != null) {
-            Block block = this.getWorld().getBlockState(this.pos).getBlock();
-            this.getWorld().notifyBlockUpdate(this.pos, this.getWorld().getBlockState(this.pos), this.getWorld().getBlockState(this.pos), 3);
-        }
-    }
-
-    @Override
-    public NBTTagCompound getUpdateTag()
-    {
-        NBTTagCompound nbtTagCompound = new NBTTagCompound();
-        writeToNBT(nbtTagCompound);
-        return nbtTagCompound;
-    }
-
-    @Override
-    public void handleUpdateTag(NBTTagCompound tag)
-    {
-        this.readFromNBT(tag);
     }
 
     @Override
@@ -167,9 +111,9 @@ public class SolarGeneratorTE extends TileEntity implements ITickable {
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
 
         if (capability == CapabilityEnergy.ENERGY) {
-            return (T) storage;
+            return (T) this.getStorage();
         }else if (capability == TeslaCapabilities.CAPABILITY_HOLDER || capability == TeslaCapabilities.CAPABILITY_CONSUMER || capability == TeslaCapabilities.CAPABILITY_PRODUCER) {
-            return (T) tesla;
+            return (T) this.getTesla();
         }
 
         return super.getCapability(capability, facing);

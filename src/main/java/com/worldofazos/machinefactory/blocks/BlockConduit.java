@@ -1,6 +1,6 @@
 package com.worldofazos.machinefactory.blocks;
 
-import com.worldofazos.machinefactory.blocks.EnergyConduit.conduitTE;
+import com.worldofazos.machinefactory.blocks.EnergyConduit.EnergyConduitTE;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -9,7 +9,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -26,7 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class BlockConduit extends BlockTileEntity<conduitTE>{
+public class BlockConduit extends BlockTileEntity<EnergyConduitTE>{
 
     public static final PropertyBool NORTH = PropertyBool.create("north");
     public static final PropertyBool EAST = PropertyBool.create("east");
@@ -78,7 +77,7 @@ public class BlockConduit extends BlockTileEntity<conduitTE>{
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         if(!world.isRemote) {
             if(player.isSneaking()) {
-                conduitTE tile = this.getTileEntity(world, pos);
+                EnergyConduitTE tile = this.getTileEntity(world, pos);
                 player.addChatMessage(new TextComponentString(tile.toDebug()));
             }
 
@@ -194,8 +193,8 @@ public class BlockConduit extends BlockTileEntity<conduitTE>{
     }
 
     @Override
-    public Class<conduitTE> getTileEntityClass() {
-        return conduitTE.class;
+    public Class<EnergyConduitTE> getTileEntityClass() {
+        return EnergyConduitTE.class;
     }
 
     @Override
@@ -205,8 +204,8 @@ public class BlockConduit extends BlockTileEntity<conduitTE>{
 
     @Nullable
     @Override
-    public conduitTE createTileEntity(World world, IBlockState state) {
-        return new conduitTE();
+    public EnergyConduitTE createTileEntity(World world, IBlockState state) {
+        return new EnergyConduitTE();
     }
 
 }

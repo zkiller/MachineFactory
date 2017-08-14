@@ -47,10 +47,8 @@ public class EnergyStorageCreativeTE extends TileEntityMachineBase implements IT
             if(te.hasCapability(CapabilityEnergy.ENERGY, facing)) {
                 IEnergyStorage energy = te.getCapability(CapabilityEnergy.ENERGY, facing);
                 energy.receiveEnergy(1000000, false);
-            }
-
-            if(te.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, null)){
-                ITeslaConsumer energy = te.getCapability(TeslaCapabilities.CAPABILITY_CONSUMER,null);
+            }else if(te.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, facing)){
+                ITeslaConsumer energy = te.getCapability(TeslaCapabilities.CAPABILITY_CONSUMER,facing);
                 energy.givePower(1000000, false);
             }
         }

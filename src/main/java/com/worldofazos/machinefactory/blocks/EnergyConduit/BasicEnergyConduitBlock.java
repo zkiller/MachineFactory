@@ -15,8 +15,8 @@ public class BasicEnergyConduitBlock extends BlockConduit {
 
     @Nullable
     @Override
-    public conduitTE createTileEntity(World world, IBlockState state) {
-        return new conduitTE();
+    public EnergyConduitTE createTileEntity(World world, IBlockState state) {
+        return new EnergyConduitTE();
     }
 
 }
